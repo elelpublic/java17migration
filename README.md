@@ -6,7 +6,7 @@ only deals with problems in our software.
 
 ## Problem areas
 
-### Deprecated apis
+### Deprecated API
 
 For instance "new Integer(...)" and similar is migrated to Integer.valueOf(...).
 

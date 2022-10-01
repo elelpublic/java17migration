@@ -68,6 +68,49 @@ Caused by: java.lang.NumberFormatException: multiple points
 	at org.apache.commons.lang.SystemUtils.<clinit>(SystemUtils.java:469)
 ```
 
-Measures:
+Mitigation:
 
 * throw out org.apache.commons.lang.* in favor of org.apache.commons.lang3.*
+
+This causes the need to upgrade velocity.
+
+### New version of velocity
+
+Deprecated configuration:
+
+```
+# old way (velocity 1.7)
+resource.loader=memory
+memory.resource.loader.class=com.infodesire.v20.templating.velocity.MemoryResourceLoader
+
+# the new way (velocity 2+)
+resource.loaders=memory
+resource.loader.memory.class=com.infodesire.v20.templating.velocity.MemoryResourceLoader
+```
+
+Problem with hyphens in variable names:
+
+```
+#set( $ext-debug="1" )
+```
+
+will cause:
+
+```
+66   [main] ERROR velocity.parser  - 1664649690654-0: Encountered "-" at line 1, column 11.
+Was expecting one of:
+    "[" ...
+    <WHITESPACE> ...
+    <NEWLINE> ...
+    "=" ...
+```
+
+Mitigation:
+
+Set variable in velocity properties:
+
+```
+parser.allow_hyphen_in_identifiers=true
+```
+
+ 

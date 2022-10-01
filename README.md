@@ -55,3 +55,19 @@ For unit tests in ant:
           ...
 ```
 
+### Error parsing java version numbers
+
+commons-lang
+
+```
+Caused by: java.lang.NumberFormatException: multiple points
+	at java.base/jdk.internal.math.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:1914)
+	at java.base/jdk.internal.math.FloatingDecimal.parseFloat(FloatingDecimal.java:122)
+	at java.base/java.lang.Float.parseFloat(Float.java:476)
+	at org.apache.commons.lang.SystemUtils.getJavaVersionAsFloat(SystemUtils.java:756)
+	at org.apache.commons.lang.SystemUtils.<clinit>(SystemUtils.java:469)
+```
+
+Measures:
+
+* throw out org.apache.commons.lang.* in favor of org.apache.commons.lang3.*

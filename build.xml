@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="usage" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <target name="properties">
+
+        <property file="project.properties" />
+
+    </target>
+
+    <target name="setup.ivy" depends="properties" >
+
+        <!-- ivy (dependency manager) -->
+        <!-- to (re)install ivy: cd ivy; ./install-ivy.sh -->
+        <path id="ivy.lib.path">
+            <fileset dir="tools/ivy" includes="*.jar"/>
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+
+    </target>
+
+    <target name="setup.groovy" depends="fetchlibs, properties">
+        <path id="groovy.lib.path">
+            <fileset dir="lib" includes="groovy-${groovy.version}.jar"/>
+        </path>
+        <taskdef name="groovy"
+                 classname="org.codehaus.groovy.ant.Groovy"
+                 classpathref="groovy.lib.path"
+        />
+    </target>
+
+    <target name="hello.groovy" depends="setup.groovy">
+        <groovy>
+            System.out.println( "Hello? Groovy speaking here" );
+        </groovy>
+    </target>
+
+    <target name="fetchlibs" depends="tools.install, setup.ivy">
+        <ivy:retrieve />
+    </target>
+
+    <target name="compile" depends="fetchlibs">
+        <mkdir dir="target/classes" />
+        <javac
+                srcdir="src/main/java"
+                destdir="target/classes"
+        >
+            <src path="src/main/java" />
+            <src path="src/test/java" />
+            <classpath>
+                <pathelement location="lib/commons-lang3-${commons-lang3.version}.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="hello" depends="test">
+        <java
+                classpath="target/classes"
+                classname="com.infodesire.java17migration.Main"
+        >
+            <classpath>
+                <pathelement location="lib/commons-lang3-${commons-lang3.version}.jar" />
+                <pathelement location="lib/velocity-engine-core-${velocity.version}.jar" />
+            </classpath>
+        </java>
+    </target>
+
+    <target name="tools.install" depends="properties">
+
+        <mkdir dir="tools/ivy" />
+        <get
+                src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"
+                dest="tools/ivy"
+                usetimestamp="true"
+                skipexisting="true"
+        />
+
+    </target>
+
+    <target name="test" depends="test.run">
+        <fail if="failures" ></fail>
+    </target>
+
+
+    <target name="test.run" depends="compile, setup.groovy">
+
+        <!-- default fallback: test all -->
+        <property name="test.include" value="**/*Test.class" />
+
+        <mkdir dir="target/test-generated-files" />
+        <junit
+                fork="true"
+                printsummary="on"
+        >
+            <!-- fork:true is necessary, because some tests use ant themselves -->
+
+            <classpath>
+                <fileset dir="lib" />
+                <pathelement location="target/classes" />
+            </classpath>
+
+            <batchtest
+                    failureproperty="failures"
+                    errorproperty="failures"
+                    todir="target/test-generated-files"
+            >
+
+                <fileset dir="target/classes" >
+                    <include name="${test.include}" />
+                </fileset>
+
+            </batchtest>
+
+            <formatter type="xml" />
+
+        </junit>
+
+        <mkdir dir="target/test-report" />
+        <junitreport todir="target/test-report">
+            <fileset dir="target/test-generated-files">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="noframes" todir="target/test-report/report"/>
+        </junitreport>
+
+        <groovy>
+            import java.awt.Desktop;
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop desktop = Desktop.getDesktop();
+                    File myFile = new File("target/test-report/report/junit-noframes.html");
+                    desktop.open(myFile);
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+        </groovy>
+
+    </target>
+
+    <target name="clean">
+        <delete dir="target" />
+    </target>
+
+    <target name="clean.all" depends="clean">
+        <delete dir="lib" />
+        <delete dir="tools" />
+    </target>
+
+    <target name="help" depends="usage" />
+
+    <target name="usage">
+        <echo>
+
+Sample project using ant and ivy
+
+ant tools.install ............. Install tools: ivy
+ant hello.groovy .............. Test the groovy installation
+ant clean ..................... Delete generated files
+ant clean.all ................. Delete all generated or downloaded files
+ant test ...................... Run unit tests
+ant hello ..................... Compile and run the hello world program
+
+        </echo>
+    </target>
+
+</project>

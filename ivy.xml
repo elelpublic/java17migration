@@ -1,0 +1,49 @@
+<ivy-module version="2.0">
+
+    <info organisation="com.infodesire"
+          module="sampleApp"/>
+
+    <dependencies>
+
+        <!--
+        https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
+
+        Check some encoding problems after upgrading from velocity 1.x to 2.x
+        -->
+        <dependency org="org.apache.velocity" name="velocity-engine-core" rev="2.3"/>
+
+        <!--
+        https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+
+        Used by velocity.
+        -->
+        <dependency org="org.slf4j" name="slf4j-api" rev="2.0.3"/>
+
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency org="junit" name="junit" rev="4.13.2"/>
+
+        <!--
+        https://mvnrepository.com/artifact/org.hamcrest/hamcrest
+
+        Hamcrest is used by junit4
+        -->
+        <dependency org="org.hamcrest" name="hamcrest" rev="2.2"/>
+
+        <!--
+        https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+
+        We use this library only to show how to include thirdparty libs in the build process
+        -->
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.12.0"/>
+
+        <!--
+        https://mvnrepository.com/artifact/org.apache.groovy/groovy
+
+        We use groovy only to perform script tasks in the ant build script
+        -->
+        <dependency org="org.apache.groovy" name="groovy" rev="4.0.5"/>
+
+    </dependencies>
+
+</ivy-module>

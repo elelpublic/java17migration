@@ -76,7 +76,7 @@ This causes the need to upgrade velocity.
 
 ### New version of velocity
 
-Deprecated configuration:
+#### Deprecated configuration:
 
 ```
 # old way (velocity 1.7)
@@ -88,7 +88,7 @@ resource.loaders=memory
 resource.loader.memory.class=com.infodesire.v20.templating.velocity.MemoryResourceLoader
 ```
 
-Problem with hyphens in variable names:
+#### Problem with hyphens in variable names:
 
 ```
 #set( $ext-debug="1" )
@@ -113,4 +113,20 @@ Set variable in velocity properties:
 parser.allow_hyphen_in_identifiers=true
 ```
 
+#### Velocity 2 uses JVMs encoding instead of ISO-8859-15
+
+Some characters will display incorrectly in rendered text.
+
+Mitigation: in MemoryResourceLoader
+
+```
+  public Reader getResourceReader( String name, String encoding ) throws ResourceNotFoundException {
+    try {
+      return new InputStreamReader( getResourceStream( name ), "ISO-8859-15" );
+    }
+    catch( UnsupportedEncodingException ex ) {
+      throw new RuntimeException( ex );
+    }
+  }
+```
  

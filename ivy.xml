@@ -9,6 +9,13 @@
         https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
 
         Check some encoding problems after upgrading from velocity 1.x to 2.x
+
+        new version:
+        <dependency org="org.apache.velocity" name="velocity-engine-core" rev="${velocity.version}"/>
+
+        for regression tests and comparisons to old
+        old version
+        <dependency org="org.apache.velocity" name="velocity" rev="${velocity.version}"/>
         -->
         <dependency org="org.apache.velocity" name="velocity-engine-core" rev="${velocity.version}"/>
 
@@ -20,7 +27,11 @@
         <dependency org="org.slf4j" name="slf4j-api" rev="${org.slf4j.version}"/>
 
 
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <!--
+        https://mvnrepository.com/artifact/junit/junit
+
+        Unit test engine
+        -->
         <dependency org="junit" name="junit" rev="${junit.version}"/>
 
         <!--
